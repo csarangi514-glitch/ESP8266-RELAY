@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta
+    name="description"
+    content="ESP8266-RELAY browser firmware installer by rakabhai."
+  >
+
+  <meta name="theme-color" content="#0b0f19">
+
+  <title>ESP8266-RELAY | Firmware Installer</title>
+
+  <!-- ESP Web Tools -->
+  <script
+    type="module"
+    src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module">
+  </script>
+
+  <style>
+
+    :root {
+      --bg: #080b12;
+      --panel: #101621;
+      --panel-2: #141b28;
+      --border: #263143;
+
+      --text: #f4f7fb;
+      --muted: #9aa7b8;
+
+      --accent: #6d7cff;
+      --accent-2: #4e5de6;
+
+      --success: #35c98a;
+      --warning: #f3b84b;
+      --danger: #ff6b6b;
+
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background: var(--bg);
+      color: var(--text);
+
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 32px));
+      margin: auto;
+    }
+
+    /* HEADER */
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: #090d15;
+    }
+
+    .nav {
+      min-height: 68px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--accent),
+          var(--accent-2)
+        );
+
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .brand small {
+      display: block;
+
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* HERO */
+
+    .hero {
+      padding: 78px 0 58px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+
+      padding: 6px 10px;
+
+      border: 1px solid var(--border);
+      border-radius: 999px;
+
+      color: #b9c5ff;
+      background: #11172a;
+
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+
+      font-size: clamp(38px, 7vw, 68px);
+      line-height: 1.02;
+      letter-spacing: -0.055em;
+    }
+
+    .hero-text {
+      max-width: 680px;
+
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .hero-actions {
+      margin-top: 28px;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* REAL ESP WEB TOOLS BUTTON */
+
+    esp-web-install-button {
+      --esp-tools-button-color: #ffffff;
+      --esp-tools-button-text-color: #101426;
+      --esp-tools-button-border-radius: 12px;
+    }
+
+    esp-web-install-button::part(button) {
+      border-radius: 12px;
+    }
+
+    /*
+      This is the actual ESP Web Tools activation button.
+      We use the activate slot so ESP Web Tools keeps control
+      of the real install operation.
+    */
+
+    .flash-button {
+      min-height: 50px;
+
+      padding: 13px 22px;
+
+      border: 0;
+      border-radius: 12px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--accent),
+          var(--accent-2)
+        );
+
+      color: white;
+
+      font: inherit;
+      font-weight: 750;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 6px 18px rgba(78, 93, 230, 0.20);
+
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        filter 160ms ease;
+    }
+
+    .flash-button:hover {
+      transform: translateY(-1px);
+
+      box-shadow:
+        0 9px 22px rgba(78, 93, 230, 0.26);
+
+      filter: brightness(1.05);
+    }
+
+    .flash-button:active {
+      transform: translateY(0);
+    }
+
+    .flash-button:focus-visible {
+      outline: 3px solid rgba(109, 124, 255, 0.45);
+      outline-offset: 3px;
+    }
+
+    .secondary-button {
+      min-height: 50px;
+
+      padding: 12px 20px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 1px solid var(--border);
+      border-radius: 12px;
+
+      background: var(--panel);
+      color: var(--text);
+
+      text-decoration: none;
+
+      font-weight: 650;
+
+      transition:
+        background 160ms ease,
+        border-color 160ms ease;
+    }
+
+    .secondary-button:hover {
+      background: var(--panel-2);
+      border-color: #39465b;
+    }
+
+    /* DEVICE CARD */
+
+    .device-card {
+      padding: 24px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+
+      background:
+        linear-gradient(
+          180deg,
+          #121927,
+          #0e141f
+        );
+    }
+
+    .device-icon {
+      width: 58px;
+      height: 58px;
+
+      display: grid;
+      place-items: center;
+
+      margin-bottom: 20px;
+
+      border-radius: 14px;
+
+      background: #1b2334;
+
+      font-size: 26px;
+    }
+
+    .device-card h2 {
+      margin: 0 0 5px;
+      font-size: 22px;
+    }
+
+    .device-card p {
+      margin: 0;
+
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status {
+      margin-top: 22px;
+
+      padding: 11px 13px;
+
+      border-radius: 10px;
+
+      background: #0b111a;
+      border: 1px solid var(--border);
+
+      color: #b9c5d5;
+
+      font-size: 13px;
+    }
+
+    .status strong {
+      color: var(--success);
+    }
+
+    /* SECTIONS */
+
+    section {
+      padding: 30px 0 70px;
+    }
+
+    .section-title {
+      margin-bottom: 24px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 7px;
+
+      font-size: clamp(26px, 4vw, 36px);
+      letter-spacing: -0.035em;
+    }
+
+    .section-title p {
+      margin: 0;
+
+      color: var(--muted);
+    }
+
+    /* INFO GRID */
+
+    .info-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+      gap: 14px;
+    }
+
+    .info-card {
+      padding: 20px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+
+      background: var(--panel);
+    }
+
+    .info-card span {
+      display: block;
+
+      margin-bottom: 7px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      font-weight: 700;
+
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .info-card strong {
+      font-size: 18px;
+    }
+
+    /* STEPS */
+
+    .steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      display: grid;
+
+      grid-template-columns: 40px 1fr;
+
+      gap: 14px;
+
+      padding: 17px;
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      background: var(--panel);
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background: #1c2540;
+      color: #bfc8ff;
+
+      font-weight: 800;
+    }
+
+    .step h3 {
+      margin: 1px 0 4px;
+      font-size: 16px;
+    }
+
+    .step p {
+      margin: 0;
+
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    code {
+      padding: 2px 5px;
+
+      border-radius: 5px;
+
+      background: #090d14;
+
+      color: #c9d1ff;
+
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+      font-size: 0.9em;
+    }
+
+    /* WARNING */
+
+    .warning {
+      padding: 18px;
+
+      border: 1px solid #55451e;
+      border-radius: 14px;
+
+      background: #17140d;
+    }
+
+    .warning strong {
+      color: var(--warning);
+    }
+
+    .warning p {
+      margin: 7px 0 0;
+
+      color: #c8bea7;
+      font-size: 14px;
+    }
+
+    /* TROUBLESHOOT */
+
+    .troubleshooting {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 14px;
+    }
+
+    .trouble {
+      padding: 18px;
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      background: var(--panel);
+    }
+
+    .trouble h3 {
+      margin: 0 0 7px;
+
+      font-size: 16px;
+    }
+
+    .trouble p {
+      margin: 0;
+
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* VIDEO */
+
+    .video-card {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 20px;
+
+      padding: 22px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+
+      background:
+        linear-gradient(
+          135deg,
+          #111829,
+          #10151f
+        );
+    }
+
+    .video-card h3 {
+      margin: 0 0 5px;
+    }
+
+    .video-card p {
+      margin: 0;
+
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* FOOTER */
+
+    footer {
+      border-top: 1px solid var(--border);
+
+      padding: 28px 0 36px;
+
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 20px;
+
+      flex-wrap: wrap;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 800px) {
+
+      .hero {
+        padding-top: 50px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .troubleshooting {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 560px) {
+
+      .container {
+        width: min(100% - 22px, 1080px);
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .flash-button,
+      .secondary-button {
+        width: 100%;
+      }
+
+      .video-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition: none !important;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+
+  <div class="container nav">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        R
+      </div>
+
+      <div>
+        ESP8266-RELAY
+        <small>rakabhai firmware portal</small>
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<main>
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="container hero-grid">
+
+      <div>
+
+        <span class="eyebrow">
+          Browser Firmware Installer
+        </span>
+
+        <h1>
+          Flash ESP8266<br>
+          directly from your browser.
+        </h1>
+
+        <p class="hero-text">
+          Install ESP8266-RELAY firmware directly from Chrome
+          or Microsoft Edge using Web Serial. No desktop
+          flashing application is required.
+        </p>
+
+        <div class="hero-actions">
+
+          <!-- REAL ESP WEB TOOLS COMPONENT -->
+
+          <esp-web-install-button
+            manifest="./manifest.json"
+          >
+
+            <!--
+              IMPORTANT:
+              This is the REAL ESP Web Tools activation button.
+              Do not replace it with a fake JavaScript button.
+            -->
+
+            <button
+              slot="activate"
+              class="flash-button"
+              type="button"
+            >
+              Flash Firmware
+            </button>
+
+            <span slot="unsupported">
+              Your browser does not support Web Serial.
+              Please use a supported desktop browser such as
+              Chrome or Microsoft Edge.
+            </span>
+
+            <span slot="not-allowed">
+              Firmware flashing requires a secure HTTPS page.
+            </span>
+
+          </esp-web-install-button>
+
+
+          <a
+            class="secondary-button"
+            href="#instructions"
+          >
+            Installation Guide
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <aside class="device-card">
+
+        <div class="device-icon">
+          ⚡
+        </div>
+
+        <h2>
+          NodeMCU ESP-12E
+        </h2>
+
+        <p>
+          ESP8266 development board
+        </p>
+
+        <div class="status">
+          Firmware:
+          <strong>2GTracker.ino.bin</strong>
+        </div>
+
+        <div class="status">
+          Flash offset:
+          <strong>0x00000</strong>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </section>
+
+
+  <!-- BOARD INFORMATION -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          Firmware information
+        </h2>
+
+        <p>
+          Current firmware package supported by this installer.
+        </p>
+
+      </div>
+
+
+      <div class="info-grid">
+
+        <div class="info-card">
+
+          <span>
+            Project
+          </span>
+
+          <strong>
+            ESP8266-RELAY
+          </strong>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <span>
+            Board
+          </span>
+
+          <strong>
+            NodeMCU 1.0 (ESP-12E)
+          </strong>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <span>
+            Chip family
+          </span>
+
+          <strong>
+            ESP8266
+          </strong>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <span>
+            Firmware
+          </span>
+
+          <strong>
+            2GTracker.ino.bin
+          </strong>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <span>
+            Version
+          </span>
+
+          <strong>
+            1.0.0
+          </strong>
+
+        </div>
+
+
+        <div class="info-card">
+
+          <span>
+            Flash offset
+          </span>
+
+          <strong>
+            0x00000
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- INSTRUCTIONS -->
+
+  <section id="instructions">
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          How to flash
+        </h2>
+
+        <p>
+          Follow these steps before pressing Flash Firmware.
+        </p>
+
+      </div>
+
+
+      <div class="steps">
+
+        <div class="step">
+
+          <div class="step-number">
+            1
+          </div>
+
+          <div>
+
+            <h3>
+              Use a supported browser
+            </h3>
+
+            <p>
+              Open this page in desktop Google Chrome or
+              Microsoft Edge with Web Serial support.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            2
+          </div>
+
+          <div>
+
+            <h3>
+              Connect the ESP8266
+            </h3>
+
+            <p>
+              Connect your NodeMCU ESP-12E to the computer
+              using a USB data cable.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            3
+          </div>
+
+          <div>
+
+            <h3>
+              Close serial applications
+            </h3>
+
+            <p>
+              Close Arduino Serial Monitor, PlatformIO,
+              terminal programs and other applications that
+              may already have the COM port open.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            4
+          </div>
+
+          <div>
+
+            <h3>
+              Press Flash Firmware
+            </h3>
+
+            <p>
+              ESP Web Tools will open the browser's serial
+              port selection dialog.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            5
+          </div>
+
+          <div>
+
+            <h3>
+              Select your ESP8266 serial port
+            </h3>
+
+            <p>
+              Select the USB serial device belonging to your
+              NodeMCU board and allow the browser to connect.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            6
+          </div>
+
+          <div>
+
+            <h3>
+              Start installation
+            </h3>
+
+            <p>
+              ESP Web Tools will download the firmware from
+              this website and write it to the ESP8266.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- WARNING -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="warning">
+
+        <strong>
+          Important before flashing
+        </strong>
+
+        <p>
+          Flashing replaces the firmware currently installed
+          on the ESP8266. Make sure you have a backup of any
+          important firmware or configuration before installing
+          new firmware.
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- BOOTLOADER -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          If the ESP8266 will not connect
+        </h2>
+
+        <p>
+          Try manual bootloader mode.
+        </p>
+
+      </div>
+
+
+      <div class="steps">
+
+        <div class="step">
+
+          <div class="step-number">
+            A
+          </div>
+
+          <div>
+
+            <h3>
+              Disconnect USB
+            </h3>
+
+            <p>
+              Remove the USB cable from the NodeMCU.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            B
+          </div>
+
+          <div>
+
+            <h3>
+              Hold FLASH
+            </h3>
+
+            <p>
+              Press and hold the FLASH button on the NodeMCU.
+              On many ESP-12E boards this button is connected
+              to GPIO0.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            C
+          </div>
+
+          <div>
+
+            <h3>
+              Connect USB
+            </h3>
+
+            <p>
+              While holding FLASH, reconnect USB.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            D
+          </div>
+
+          <div>
+
+            <h3>
+              Release FLASH
+            </h3>
+
+            <p>
+              Release the button after the USB connection
+              has initialized.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            E
+          </div>
+
+          <div>
+
+            <h3>
+              Try Flash Firmware again
+            </h3>
+
+            <p>
+              Select the newly detected serial port.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- TROUBLESHOOTING -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-title">
+
+        <h2>
+          Troubleshooting
+        </h2>
+
+        <p>
+          Common problems and solutions.
+        </p>
+
+      </div>
+
+
+      <div class="troubleshooting">
+
+        <div class="trouble">
+
+          <h3>
+            Failed to download manifest
+          </h3>
+
+          <p>
+            Open the manifest URL directly in your browser.
+            Confirm that it displays valid JSON. Check that
+            manifest.json exists in the repository root and
+            that the GitHub Pages URL is correct.
+          </p>
+
+        </div>
+
+
+        <div class="trouble">
+
+          <h3>
+            404 Page Not Found
+          </h3>
+
+          <p>
+            Check GitHub Pages settings, branch selection,
+            folder selection and the exact filename
+            index.html. Wait a few minutes after publishing.
+          </p>
+
+        </div>
+
+
+        <div class="trouble">
+
+          <h3>
+            Firmware BIN not found
+          </h3>
+
+          <p>
+            Confirm that the firmware directory contains
+            exactly 2GTracker.ino.bin and that manifest.json
+            contains firmware/2GTracker.ino.bin.
+          </p>
+
+        </div>
+
+
+        <div class="trouble">
+
+          <h3>
+            No serial port appears
+          </h3>
+
+          <p>
+            Try another USB cable. Some cables provide power
+            only and do not carry data. Also install the USB
+            serial driver required by your NodeMCU USB chip.
+          </p>
+
+        </div>
+
+
+        <div class="trouble">
+
+          <h3>
+            Port is busy
+          </h3>
+
+          <p>
+            Close Arduino IDE Serial Monitor, PlatformIO,
+            PuTTY, terminal applications and other programs
+            that may be using the COM port.
+          </p>
+
+        </div>
+
+
+        <div class="trouble">
+
+          <h3>
+            Flashing connection fails
+          </h3>
+
+          <p>
+            Disconnect/reconnect USB and try manual GPIO0
+            bootloader mode. Use a short, reliable USB data
+            cable and avoid USB hubs during troubleshooting.
+          </p>
+
+        </div>
+
+
+        <div class="trouble">
+
+          <h3>
+            GitHub Pages cache problem
+          </h3>
+
+          <p>
+            Hard-refresh the page with Ctrl+F5. Test the site
+            in an Incognito/Private window and verify the raw
+            manifest and BIN URLs separately.
+          </p>
+
+        </div>
+
+
+        <div class="trouble">
+
+          <h3>
+            ESP32-S3 connection problem
+          </h3>
+
+          <p>
+            ESP32-S3 boards can expose native USB CDC and/or
+            USB-JTAG depending on the board and firmware.
+            Use a browser/device combination that supports
+            Web Serial and select the correct USB serial
+            interface. This particular manifest is for
+            ESP8266 only.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- TUTORIAL -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="video-card">
+
+        <div>
+
+          <h3>
+            Firmware installation tutorial
+          </h3>
+
+          <p>
+            Add your YouTube tutorial URL here when it is ready.
+          </p>
+
+        </div>
+
+        <!--
+          Replace # with your YouTube URL.
+          Example:
+          https://www.youtube.com/watch?v=XXXXXXXXXXX
+        -->
+
+        <a
+          class="secondary-button"
+          href="#"
+          target="_blank"
+          rel="noopener"
+        >
+          Tutorial Video
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+
+  <div class="container footer-inner">
+
+    <div>
+      ESP8266-RELAY
+      · Firmware Portal
+    </div>
+
+    <div>
+      Created by <strong>rakabhai</strong>
+    </div>
+
+  </div>
+
+</footer>
+
+</body>
+</html>
