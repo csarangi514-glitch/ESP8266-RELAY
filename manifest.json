@@ -1,0 +1,15 @@
+{
+  "name": "ESP8266-RELAY",
+  "version": "1.0.0",
+  "builds": [
+    {
+      "chipFamily": "ESP8266",
+      "parts": [
+        {
+          "path": "firmware/2GTracker.ino.bin",
+          "offset": "0x00000"
+        }
+      ]
+    }
+  ]
+}
